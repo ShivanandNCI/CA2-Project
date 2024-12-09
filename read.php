@@ -81,7 +81,7 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                         <label>Salary</label>
                         <p><b><?php echo $row["salary"]; ?></b></p>
                     </div>
-                    <p><a href="index.php" class="btn btn-primary">Back</a></p>
+                    <p><a href="redirect.php" class="btn btn-primary">Back</a></p>
                 </div>
             </div>        
         </div>

@@ -78,8 +78,21 @@
                     // Close connection
                     mysqli_close($link);
                     ?>
+                    <form method="post" action="">
+                        <button type="submit" name="logout" class="btn btn-danger pull-right"><i class="fa fa-sign-out"></i> Logout</button>
+                    </form>
+                    <?php
+                    if(isset($_POST['logout'])){
+                        // logout.php
+                        session_start();
+                        $_SESSION = array();
+                        session_destroy();
+                        header("location: signin.php");
+                        exit;
+                    }
+                    ?>
                 </div>
-            </div>        
+            </div>
         </div>
     </div>
 </body>
