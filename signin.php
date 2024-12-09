@@ -18,6 +18,19 @@ require './PHPMailer/src/Exception.php';
 require './PHPMailer/src/PHPMailer.php';
 require './PHPMailer/src/SMTP.php';
 
+// Session timeout settings
+$timeout_duration = 1800; // 30 minutes
+
+// Check if the user is logged in and if the session has timed out
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY']) > $timeout_duration) {
+    // Last request was more than 30 minutes ago
+    session_unset(); // Unset $_SESSION variable for the run-time
+    session_destroy(); // Destroy session data in storage
+    header("Location: signin.php"); // Redirect to login page
+    exit();
+}
+$_SESSION['LAST_ACTIVITY'] = time(); // Update last activity time stamp
+
 if (isset($_SESSION['user_id'])) {
     // auto redirect to index.php if user is admin
     $user_id = $_SESSION['user_id'];
@@ -25,7 +38,11 @@ if (isset($_SESSION['user_id'])) {
     $query = mysqli_query($link, $sql);
     $data = mysqli_fetch_array($query);
 
-   
+    if ($data['roles'] == 'admin') {
+        header("Location: index.php");
+    } else {
+        header("Location: user.php");
+    }
     exit();
 }
 
@@ -35,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = mysqli_real_escape_string($link, $_POST['email']);
             $password = mysqli_real_escape_string($link, $_POST['password']);
             $_SESSION['email'] = $email;
-
+            
             $sql = "SELECT * FROM users WHERE email='$email'";
             $query = mysqli_query($link, $sql);
             $data = mysqli_fetch_array($query);
